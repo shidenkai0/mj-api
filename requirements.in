@@ -1,0 +1,13 @@
+openai
+langchain==0.0.254
+fastapi
+uvicorn
+sqlalchemy[asyncio]
+websockets
+pydantic[email]
+asyncpg
+orjson
+alembic
+firebase_admin
+httpx
+bentoml
