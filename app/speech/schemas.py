@@ -1,4 +1,4 @@
-from pydantic import BaseModel
+from pydantic import ConfigDict, BaseModel
 from uuid import UUID
 
 
@@ -14,6 +14,4 @@ class TTSTranscriptionCreate(TTSTranscriptionBase):
 class TTSTranscriptionRead(TTSTranscriptionBase):
     id: UUID
     user_id: UUID
-
-    class Config:
-        orm_mode = True
+    model_config = ConfigDict(from_attributes=True)

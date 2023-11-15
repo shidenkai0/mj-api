@@ -19,7 +19,7 @@ def json_serializer(*args, **kwargs) -> str:
 
 
 engine = create_async_engine(
-    settings.DATABASE_URL,
+    settings.DATABASE_URL.unicode_string(),
     pool_size=settings.POOL_SIZE,
     max_overflow=settings.MAX_OVERFLOW,
     json_serializer=json_serializer,  # TODO: check the performance impact

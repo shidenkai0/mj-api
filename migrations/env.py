@@ -68,7 +68,8 @@ async def run_async_migrations():
     and associate a connection with the context.
 
     """
-    connectable = create_async_engine(settings.DATABASE_URL)
+    print("DATABASE_URL", settings.DATABASE_URL.unicode_string())
+    connectable = create_async_engine(settings.DATABASE_URL.unicode_string())
 
     async with connectable.connect() as connection:
         await connection.run_sync(do_run_migrations)

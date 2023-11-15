@@ -1,7 +1,8 @@
 from enum import StrEnum
 
 import openai
-from pydantic import BaseSettings, PostgresDsn
+from pydantic import PostgresDsn
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
 class Env(StrEnum):
@@ -25,6 +26,7 @@ class Settings(BaseSettings):
     ENV: Env = Env.DEV
     PROJECT_NAME: str = "mockingjay"
     FIREBASE_KEY_FILE: str = "polyglot-dev.json"
+    FIREBASE_PROJECT_ID: str = "polyglot-dev"
     FIREBASE_AUTH_EMULATOR_HOST: str
     SUPPORTED_LANGUAGES: list[str] = ["en", "fr"]
     TTS_ENGINE_URL: str = "http://localhost:3000"
@@ -33,8 +35,7 @@ class Settings(BaseSettings):
     def show_docs(self):
         return self.ENV != "prod"
 
-    class Config:
-        env_file = ".env"
+    model_config = SettingsConfigDict(extra="ignore", env_file=".env")
 
 
 settings = Settings()

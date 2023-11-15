@@ -27,7 +27,7 @@ async def db_template() -> AsyncGenerator[str, None]:
         str: The DSN for the temporary database.
     """
     # Connect to the source database
-    source_db_url = make_url(settings.DATABASE_URL)
+    source_db_url = make_url(settings.DATABASE_URL.unicode_string())
     source_db_name = source_db_url.database
     source_db_url_no_asyncpg = source_db_url.set(
         drivername="postgresql"

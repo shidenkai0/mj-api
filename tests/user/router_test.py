@@ -79,7 +79,14 @@ async def test_create_user_invalid_language(client: httpx.AsyncClient, test_fire
     assert response.status_code == 422
     assert response.json() == {
         'detail': [
-            {'loc': ['body', 'language'], 'msg': 'Language invalid_language is not supported', 'type': 'value_error'}
+            {
+                'ctx': {'error': {}},
+                'loc': ['body', 'language'],
+                'input': 'invalid_language',
+                'msg': 'Value error, Language invalid_language is not supported',
+                'type': 'value_error',
+                'url': 'https://errors.pydantic.dev/2.5/v/value_error',
+            }
         ]
     }
 

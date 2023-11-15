@@ -1,10 +1,10 @@
 openai
-langchain==0.0.254
 fastapi
 uvicorn
 sqlalchemy[asyncio]
 websockets
 pydantic[email]
+pydantic-settings
 asyncpg
 orjson
 alembic

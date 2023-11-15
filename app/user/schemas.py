@@ -1,6 +1,6 @@
 from uuid import UUID
 
-from pydantic import BaseModel, EmailStr, validator
+from pydantic import field_validator, BaseModel, EmailStr
 
 from app.config import settings
 
@@ -13,7 +13,8 @@ class UserCreate(BaseModel):
     name: str
     language: str
 
-    @validator("language")
+    @field_validator("language")
+    @classmethod
     def validate_language(cls, v):
         """
         Validates if the language is supported by the application.
