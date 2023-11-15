@@ -23,7 +23,7 @@ class Settings(BaseSettings):
     OPENAI_API_KEY: str
     APP_SECRET: str
     ENV: Env = Env.DEV
-    PROJECT_NAME: str = "polyglot"
+    PROJECT_NAME: str = "mockingjay"
     FIREBASE_KEY_FILE: str = "polyglot-dev.json"
     FIREBASE_AUTH_EMULATOR_HOST: str
     SUPPORTED_LANGUAGES: list[str] = ["en", "fr"]

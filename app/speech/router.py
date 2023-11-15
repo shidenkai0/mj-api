@@ -72,7 +72,7 @@ async def new_transcription(user: ActiveVerifiedUser, transcription: TTSTranscri
     )
 
 
-@router.get("/transcription/{transcription_id}/download")
+@router.get("/transcription/{transcription_id}/download", responses={200: {"content": {"audio/wav": {}}}})
 async def download_transcription(user: ActiveVerifiedUser, transcription_id: UUID) -> StreamingResponse:
     transcription = await TTSTranscription.get(transcription_id=transcription_id)
     if not transcription:

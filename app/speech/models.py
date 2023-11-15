@@ -11,6 +11,15 @@ from app.database import (
 from app.speech.client import get_tts
 from app.user.models import User
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from enum import StrEnum
+
+
+# # Define the Status Enum
+# class TranscriptionStatus(StrEnum):
+#     PENDING = "pending"
+#     IN_PROGRESS = "in_progress"
+#     FAILED = "failed"
+#     COMPLETED = "completed"
 
 
 class TTSTranscription(Base, TimestampMixin, DeleteMixin):
@@ -30,6 +39,7 @@ class TTSTranscription(Base, TimestampMixin, DeleteMixin):
     user: Mapped[User] = relationship("User", lazy="joined")
     voice_preset: Mapped[str] = mapped_column(String, nullable=False)
     text: Mapped[str] = mapped_column(String, nullable=False)
+    # status: Mapped[TranscriptionStatus] = mapped_column(String, nullable=False, default=TranscriptionStatus.PENDING)
     audio: Mapped[bytes] = mapped_column(LargeBinary, nullable=False)
 
     def __repr__(self) -> str:
@@ -39,11 +49,17 @@ class TTSTranscription(Base, TimestampMixin, DeleteMixin):
         Returns:
             str: A string representation of the TTSTranscription object.
         """
-        return f"<TTSTranscription(id={self.id}, text={self.text})>"
+        return f"<TTSTranscription(id={self.id}, status={self.status} text={self.text})>"
 
     @classmethod
     async def create(
-        cls, user_id: uuid.UUID, text: str, voice_preset: str, audio: bytes, commit: bool = True
+        cls,
+        user_id: uuid.UUID,
+        text: str,
+        voice_preset: str,
+        audio: bytes,
+        # status: TranscriptionStatus = TranscriptionStatus.PENDING,
+        commit: bool = True,
     ) -> "TTSTranscription":
         """
         Create a new transcription.

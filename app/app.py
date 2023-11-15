@@ -19,7 +19,7 @@ def create_app() -> FastAPI:
     """
     app = FastAPI(
         title=settings.PROJECT_NAME,
-        openapi_url="/polyglot.json" if settings.show_docs else None,
+        openapi_url="/mockingjay.json" if settings.show_docs else None,
     )
 
     app.include_router(user_router, prefix="/users")  # TODO: consider removing prefix
