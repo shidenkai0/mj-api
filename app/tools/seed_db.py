@@ -12,9 +12,9 @@ cred = credentials.Certificate(settings.FIREBASE_KEY_FILE)
 firebase_admin.initialize_app(cred)
 
 
-async def create_user(email: str, firebase_uid: str, name: str, language: str, is_superuser: bool) -> User:
+async def create_user(email: str, supabase_uid: str, name: str, language: str, is_superuser: bool) -> User:
     user = await User.create(
-        email=email, firebase_uid=firebase_uid, name=name, language=language, is_superuser=is_superuser
+        email=email, supabase_uid=supabase_uid, name=name, language=language, is_superuser=is_superuser
     )
     return user
 
@@ -26,7 +26,7 @@ async def seed_db():
     # Create user in DB
     user = await create_user(
         email="testuser@example.com",
-        firebase_uid=firebase_user.uid,
+        supabase_uid=firebase_user.uid,
         name="Testuser",
         language="en",
         is_superuser=False,

@@ -9,7 +9,6 @@ supported_languages = settings.SUPPORTED_LANGUAGES
 
 class UserCreate(BaseModel):
     email: EmailStr
-    firebase_id_token: str
     name: str
     language: str
 
@@ -37,6 +36,6 @@ class UserCreate(BaseModel):
 class UserRead(BaseModel):
     id: UUID
     email: EmailStr
-    firebase_uid: str
+    supabase_uid: str
     name: str
     language: str

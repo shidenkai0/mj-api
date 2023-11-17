@@ -14,19 +14,19 @@ class User(Base, TimestampMixin):
 
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     email: Mapped[str] = mapped_column(String(320), unique=True, index=True, nullable=False)
-    firebase_uid: Mapped[str] = mapped_column(String(128), unique=True, index=True, nullable=False)
+    supabase_uid: Mapped[str] = mapped_column(String(36), unique=True, index=True, nullable=False)
     name: Mapped[str] = mapped_column(String(50), nullable=False)
     language: Mapped[str] = mapped_column(String(5), nullable=False, default="en")
     is_superuser: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
 
     def __repr__(self) -> str:
-        return f"<User {self.id} {self.firebase_uid} {self.email}>"
+        return f"<User {self.id} {self.supabase_uid} {self.email}>"
 
     @classmethod
     async def create(
         cls,
         email: str,
-        firebase_uid: str,
+        supabase_uid: str,
         name: str,
         language: str,
         is_superuser: bool,
@@ -34,7 +34,7 @@ class User(Base, TimestampMixin):
     ) -> "User":
         user = cls(
             email=email,
-            firebase_uid=firebase_uid,
+            supabase_uid=supabase_uid,
             name=name,
             language=language,
             is_superuser=is_superuser,
@@ -47,8 +47,8 @@ class User(Base, TimestampMixin):
         return user
 
     @classmethod
-    async def get_by_firebase_uid(cls, firebase_uid: str) -> Optional["User"]:
-        query = sa.select(cls).where(cls.firebase_uid == firebase_uid)
+    async def get_by_supabase_uid(cls, supabase_uid: str) -> Optional["User"]:
+        query = sa.select(cls).where(cls.supabase_uid == supabase_uid)
         async with async_session() as session:
             result = await session.execute(query)
             return result.scalars().first()

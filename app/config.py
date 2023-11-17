@@ -23,6 +23,7 @@ class Settings(BaseSettings):
     MAX_OVERFLOW: int = 20
     OPENAI_API_KEY: str
     APP_SECRET: str
+    SUPABASE_JWT_SECRET: str
     ENV: Env = Env.DEV
     PROJECT_NAME: str = "mockingjay"
     FIREBASE_KEY_FILE: str = "polyglot-dev.json"
