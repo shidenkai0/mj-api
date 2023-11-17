@@ -72,7 +72,30 @@ async def new_transcription(user: ActiveVerifiedUser, transcription: TTSTranscri
     )
 
 
-@router.get("/transcription/{transcription_id}/download", responses={200: {"content": {"audio/wav": {}}}})
+@router.get(
+    "/transcription/{transcription_id}/download",
+    responses={
+        200: {
+            "description": "Returns the audio content in WAV format.",
+            "content": {
+                "audio/wav": {
+                    "schema": {
+                        "type": "string",
+                        "format": "binary",
+                        "description": "A binary file containing the audio transcription in WAV format.",
+                    }
+                }
+            },
+        },
+        404: {
+            "description": "Transcription not found",
+            "content": {"application/json": {"example": {"detail": "Transcription not found"}}},
+        },
+    },
+    response_class=StreamingResponse,
+    summary="Download Transcription",
+    tags=["Transcription"],
+)
 async def download_transcription(user: ActiveVerifiedUser, transcription_id: UUID) -> StreamingResponse:
     transcription = await TTSTranscription.get(transcription_id=transcription_id)
     if not transcription:
