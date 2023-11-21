@@ -28,8 +28,6 @@ async def cleanup_db():
 
 
 if __name__ == "__main__":
-    # Get flag from command line
-
     parser = argparse.ArgumentParser(description="Seed Supabase database")
     parser.add_argument("--cleanup", action="store_true", help="Cleanup Supabase database")
 
