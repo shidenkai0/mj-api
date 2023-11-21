@@ -4,7 +4,7 @@
 #
 #    pip-compile requirements.in
 #
-aiohttp==3.8.6
+aiohttp==3.9.0
     # via bentoml
 aiosignal==1.3.1
     # via aiohttp
@@ -15,7 +15,7 @@ annotated-types==0.6.0
 anyio==3.7.1
     # via
     #   fastapi
-    #   httpx
+    #   httpcore
     #   openai
     #   starlette
     #   watchfiles
@@ -24,9 +24,7 @@ appdirs==1.4.4
 asgiref==3.7.2
     # via opentelemetry-instrumentation-asgi
 async-timeout==4.0.3
-    # via
-    #   aiohttp
-    #   asyncpg
+    # via asyncpg
 asyncpg==0.29.0
     # via -r requirements.in
 attrs==23.1.0
@@ -34,27 +32,19 @@ attrs==23.1.0
     #   aiohttp
     #   bentoml
     #   cattrs
-bentoml==1.1.9
+bentoml==1.1.10
     # via -r requirements.in
 build==1.0.3
     # via pip-tools
-cachecontrol==0.13.1
-    # via firebase-admin
-cachetools==5.3.2
-    # via google-auth
 cattrs==23.1.2
     # via bentoml
-certifi==2023.7.22
+certifi==2023.11.17
     # via
     #   httpcore
     #   httpx
     #   requests
-cffi==1.16.0
-    # via cryptography
 charset-normalizer==3.3.2
-    # via
-    #   aiohttp
-    #   requests
+    # via requests
 circus==0.18.0
     # via bentoml
 click==8.1.7
@@ -69,12 +59,12 @@ cloudpickle==3.0.0
     # via bentoml
 contextlib2==21.6.0
     # via schema
-cryptography==41.0.5
-    # via pyjwt
 deepmerge==1.1.0
     # via bentoml
 deprecated==1.2.14
     # via opentelemetry-api
+deprecation==2.1.0
+    # via postgrest
 distro==1.8.0
     # via openai
 dnspython==2.4.2
@@ -83,73 +73,32 @@ email-validator==2.1.0.post1
     # via pydantic
 fastapi==0.104.1
     # via -r requirements.in
-firebase-admin==6.2.0
-    # via -r requirements.in
 frozenlist==1.4.0
     # via
     #   aiohttp
     #   aiosignal
 fs==2.4.16
     # via bentoml
-google-api-core[grpc]==2.14.0
-    # via
-    #   firebase-admin
-    #   google-api-python-client
-    #   google-cloud-core
-    #   google-cloud-firestore
-    #   google-cloud-storage
-google-api-python-client==2.108.0
-    # via firebase-admin
-google-auth==2.23.4
-    # via
-    #   google-api-core
-    #   google-api-python-client
-    #   google-auth-httplib2
-    #   google-cloud-core
-    #   google-cloud-storage
-google-auth-httplib2==0.1.1
-    # via google-api-python-client
-google-cloud-core==2.3.3
-    # via
-    #   google-cloud-firestore
-    #   google-cloud-storage
-google-cloud-firestore==2.13.1
-    # via firebase-admin
-google-cloud-storage==2.13.0
-    # via firebase-admin
-google-crc32c==1.5.0
-    # via
-    #   google-cloud-storage
-    #   google-resumable-media
-google-resumable-media==2.6.0
-    # via google-cloud-storage
-googleapis-common-protos==1.61.0
-    # via
-    #   google-api-core
-    #   grpcio-status
+gotrue==1.3.0
+    # via supabase
 greenlet==3.0.1
     # via sqlalchemy
-grpcio==1.59.2
-    # via
-    #   google-api-core
-    #   grpcio-status
-grpcio-status==1.59.2
-    # via google-api-core
 h11==0.14.0
     # via
     #   httpcore
     #   uvicorn
-httpcore==1.0.2
+httpcore==0.17.3
     # via httpx
-httplib2==0.22.0
-    # via
-    #   google-api-python-client
-    #   google-auth-httplib2
-httpx==0.25.1
+httpx==0.24.1
     # via
     #   -r requirements.in
     #   bentoml
+    #   gotrue
     #   openai
+    #   postgrest
+    #   storage3
+    #   supabase
+    #   supafunc
 idna==3.4
     # via
     #   anyio
@@ -173,8 +122,6 @@ markupsafe==2.1.3
     #   mako
 mdurl==0.1.2
     # via markdown-it-py
-msgpack==1.0.7
-    # via cachecontrol
 multidict==6.0.4
     # via
     #   aiohttp
@@ -183,7 +130,7 @@ numpy==1.26.2
     # via bentoml
 nvidia-ml-py==11.525.150
     # via bentoml
-openai==1.2.4
+openai==1.3.3
     # via -r requirements.in
 opentelemetry-api==1.20.0
     # via
@@ -220,6 +167,7 @@ packaging==23.2
     # via
     #   bentoml
     #   build
+    #   deprecation
     #   pip-requirements-parser
 pathspec==0.11.2
     # via bentoml
@@ -227,51 +175,39 @@ pip-requirements-parser==32.0.1
     # via bentoml
 pip-tools==7.3.0
     # via bentoml
+postgrest==0.13.0
+    # via supabase
 prometheus-client==0.18.0
     # via bentoml
-proto-plus==1.22.3
-    # via google-cloud-firestore
-protobuf==4.25.0
-    # via
-    #   google-api-core
-    #   google-cloud-firestore
-    #   googleapis-common-protos
-    #   grpcio-status
-    #   proto-plus
 psutil==5.9.6
     # via
     #   bentoml
     #   circus
-pyasn1==0.5.0
-    # via
-    #   pyasn1-modules
-    #   rsa
-pyasn1-modules==0.3.0
-    # via google-auth
-pycparser==2.21
-    # via cffi
 pydantic[email]==2.5.1
     # via
     #   -r requirements.in
     #   fastapi
+    #   gotrue
     #   openai
+    #   postgrest
     #   pydantic-settings
 pydantic-core==2.14.3
     # via pydantic
 pydantic-settings==2.1.0
     # via -r requirements.in
-pygments==2.16.1
+pygments==2.17.1
     # via rich
-pyjwt[crypto]==2.8.0
-    # via firebase-admin
+pyjwt==2.8.0
+    # via -r requirements.in
 pyparsing==3.1.1
-    # via
-    #   httplib2
-    #   pip-requirements-parser
+    # via pip-requirements-parser
 pyproject-hooks==1.0.0
     # via build
 python-dateutil==2.8.2
-    # via bentoml
+    # via
+    #   bentoml
+    #   realtime
+    #   storage3
 python-dotenv==1.0.0
     # via pydantic-settings
 python-json-logger==2.0.7
@@ -282,16 +218,12 @@ pyyaml==6.0.1
     # via bentoml
 pyzmq==25.1.1
     # via circus
+realtime==1.0.0
+    # via supabase
 requests==2.31.0
-    # via
-    #   bentoml
-    #   cachecontrol
-    #   google-api-core
-    #   google-cloud-storage
-rich==13.6.0
     # via bentoml
-rsa==4.9
-    # via google-auth
+rich==13.7.0
+    # via bentoml
 schema==0.7.5
     # via bentoml
 simple-di==0.1.5
@@ -303,6 +235,7 @@ six==1.16.0
 sniffio==1.3.0
     # via
     #   anyio
+    #   httpcore
     #   httpx
 sqlalchemy[asyncio]==2.0.23
     # via
@@ -312,6 +245,14 @@ starlette==0.27.0
     # via
     #   bentoml
     #   fastapi
+storage3==0.6.1
+    # via supabase
+strenum==0.4.15
+    # via postgrest
+supabase==2.0.3
+    # via -r requirements.in
+supafunc==0.3.1
+    # via supabase
 tornado==6.3.3
     # via circus
 tqdm==4.66.1
@@ -324,9 +265,9 @@ typing-extensions==4.8.0
     #   opentelemetry-sdk
     #   pydantic
     #   pydantic-core
+    #   realtime
     #   sqlalchemy
-uritemplate==4.1.1
-    # via google-api-python-client
+    #   storage3
 urllib3==2.1.0
     # via requests
 uvicorn==0.24.0.post1
@@ -335,8 +276,10 @@ uvicorn==0.24.0.post1
     #   bentoml
 watchfiles==0.21.0
     # via bentoml
-websockets==12.0
-    # via -r requirements.in
+websockets==10.4
+    # via
+    #   -r requirements.in
+    #   realtime
 wheel==0.41.3
     # via pip-tools
 wrapt==1.16.0

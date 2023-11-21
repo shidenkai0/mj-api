@@ -16,7 +16,6 @@ class User(Base, TimestampMixin):
     email: Mapped[str] = mapped_column(String(320), unique=True, index=True, nullable=False)
     supabase_uid: Mapped[str] = mapped_column(String(36), unique=True, index=True, nullable=False)
     name: Mapped[str] = mapped_column(String(50), nullable=False)
-    language: Mapped[str] = mapped_column(String(5), nullable=False, default="en")
     is_superuser: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
 
     def __repr__(self) -> str:
@@ -28,7 +27,6 @@ class User(Base, TimestampMixin):
         email: str,
         supabase_uid: str,
         name: str,
-        language: str,
         is_superuser: bool,
         commit: bool = True,
     ) -> "User":
@@ -36,7 +34,6 @@ class User(Base, TimestampMixin):
             email=email,
             supabase_uid=supabase_uid,
             name=name,
-            language=language,
             is_superuser=is_superuser,
         )
         if commit:

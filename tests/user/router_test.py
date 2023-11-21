@@ -1,7 +1,6 @@
 import uuid
 import httpx
 import pytest
-from firebase_admin import auth
 
 from app.user.models import User
 from tests.fixtures.core import generate_jwt_token
@@ -30,7 +29,6 @@ async def test_create_user(client: httpx.AsyncClient):
         "email": db_user.email,
         "supabase_uid": db_user.supabase_uid,
         "name": db_user.name,
-        "language": db_user.language,
     }
 
 
@@ -66,37 +64,6 @@ async def test_create_user_invalid_token(client: httpx.AsyncClient):
 
 
 @pytest.mark.asyncio
-async def test_create_user_invalid_language(client: httpx.AsyncClient):
-    jwt_token = generate_jwt_token(
-        email=USER_EMAIL,
-        user_id=str(USER_UID),
-        is_email_verified=False,
-    )
-    client.headers["Authorization"] = f"Bearer {jwt_token}"
-    response = await client.post(
-        "/users",
-        json={
-            "email": USER_EMAIL,
-            "name": "Test",
-            "language": "invalid_language",
-        },
-    )
-    assert response.status_code == 422
-    assert response.json() == {
-        'detail': [
-            {
-                'ctx': {'error': {}},
-                'loc': ['body', 'language'],
-                'input': 'invalid_language',
-                'msg': 'Value error, Language invalid_language is not supported',
-                'type': 'value_error',
-                'url': 'https://errors.pydantic.dev/2.5/v/value_error',
-            }
-        ]
-    }
-
-
-@pytest.mark.asyncio
 async def test_get_me(authenticated_client_user: httpx.AsyncClient, test_user: User):
     response = await authenticated_client_user.get("/users/me")
     assert response.status_code == 200
@@ -105,5 +72,4 @@ async def test_get_me(authenticated_client_user: httpx.AsyncClient, test_user: U
         "email": test_user.email,
         "supabase_uid": test_user.supabase_uid,
         "name": test_user.name,
-        "language": test_user.language,
     }

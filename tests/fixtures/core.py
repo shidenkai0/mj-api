@@ -6,7 +6,6 @@ import httpx
 import jwt
 import pytest_asyncio
 from fastapi import FastAPI
-from firebase_admin import auth
 
 from app.app import create_app
 from app.config import settings
@@ -40,6 +39,7 @@ def generate_jwt_token(user_id: str, email: str, is_email_verified: bool = True)
     payload = {
         "sub": user_id,
         "email": email,
+        "aud": "authenticated",
         "email_verified": is_email_verified,
         "exp": datetime.utcnow() + timedelta(hours=1),
     }
@@ -53,7 +53,6 @@ async def create_test_user(email: str, name: str, is_superuser: bool) -> User:
         email=email,
         supabase_uid=str(uuid.uuid4()),  # Generate a unique ID
         name=name,
-        language="en",
         is_superuser=is_superuser,
     )
     assert user.id is not None

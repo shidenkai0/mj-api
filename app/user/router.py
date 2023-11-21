@@ -1,10 +1,4 @@
 from fastapi import APIRouter, HTTPException, status
-from firebase_admin import auth
-from firebase_admin.auth import (
-    ExpiredIdTokenError,
-    InvalidIdTokenError,
-    RevokedIdTokenError,
-)
 
 from app.user.auth import ValidToken, ActiveVerifiedUser
 from app.user.models import User
@@ -33,7 +27,6 @@ async def create_user(user_create: UserCreate, decoded_token: ValidToken) -> Use
         email=user_create.email,
         supabase_uid=supabase_uid,
         name=user_create.name,
-        language=user_create.language,
         is_superuser=False,
     )
 
@@ -42,7 +35,6 @@ async def create_user(user_create: UserCreate, decoded_token: ValidToken) -> Use
         email=db_user.email,
         supabase_uid=supabase_uid,
         name=db_user.name,
-        language=db_user.language,
     )
 
 
@@ -56,5 +48,4 @@ async def get_me(user: ActiveVerifiedUser) -> UserRead:
         email=user.email,
         supabase_uid=user.supabase_uid,
         name=user.name,
-        language=user.language,
     )
