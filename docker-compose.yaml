@@ -75,7 +75,7 @@ services:
       - "5432:5432"
     volumes:
       - db-data:/var/lib/postgresql/data
-      - ./scripts/db-init/99_create_test_db.sql:/docker-entrypoint-initdb.d/99_create_test_db.sql
+      - ./scripts/db-init/99_setup_test_db.sql:/docker-entrypoint-initdb.d/99_setup_test_db.sql
 
 volumes:
   db-data:

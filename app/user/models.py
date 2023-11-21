@@ -12,9 +12,11 @@ from app.database import Base, TimestampMixin, async_session
 class User(Base, TimestampMixin):
     __tablename__ = "user"
 
-    id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    id: Mapped[uuid.UUID] = mapped_column(
+        UUID(as_uuid=True), primary_key=True, default=uuid.uuid4, server_default=sa.text("uuid_generate_v4()")
+    )
     email: Mapped[str] = mapped_column(String(320), unique=True, index=True, nullable=False)
-    supabase_uid: Mapped[str] = mapped_column(String(36), unique=True, index=True, nullable=False)
+    supabase_uid: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), unique=True, index=True, nullable=False)
     name: Mapped[str] = mapped_column(String(50), nullable=False)
     is_superuser: Mapped[bool] = mapped_column(Boolean, default=False, nullable=False)
 
@@ -44,7 +46,7 @@ class User(Base, TimestampMixin):
         return user
 
     @classmethod
-    async def get_by_supabase_uid(cls, supabase_uid: str) -> Optional["User"]:
+    async def get_by_supabase_uid(cls, supabase_uid: uuid.UUID) -> Optional["User"]:
         query = sa.select(cls).where(cls.supabase_uid == supabase_uid)
         async with async_session() as session:
             result = await session.execute(query)

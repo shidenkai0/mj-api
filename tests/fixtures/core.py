@@ -35,9 +35,9 @@ HOST, PORT = "127.0.0.1", "8080"
 
 
 # Generate JWT Token for Test User
-def generate_jwt_token(user_id: str, email: str, is_email_verified: bool = True) -> str:
+def generate_jwt_token(user_id: uuid.UUID, email: str, is_email_verified: bool = True) -> str:
     payload = {
-        "sub": user_id,
+        "sub": str(user_id),
         "email": email,
         "aud": "authenticated",
         "email_verified": is_email_verified,

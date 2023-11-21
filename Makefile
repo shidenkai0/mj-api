@@ -95,6 +95,7 @@ dev_tunnel:
 
 cleanup_supabase:
 	docker-compose run --rm web alembic downgrade base
+	docker-compose run -e PYTHONPATH=/app web python app/tools/seed_db.py --cleanup
 
 cleanup:
 	docker-compose down -v --remove-orphans

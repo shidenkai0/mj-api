@@ -27,7 +27,7 @@ async def test_create_user(client: httpx.AsyncClient):
     assert response.json() == {
         "id": str(db_user.id),
         "email": db_user.email,
-        "supabase_uid": db_user.supabase_uid,
+        "supabase_uid": str(db_user.supabase_uid),
         "name": db_user.name,
     }
 
@@ -70,6 +70,6 @@ async def test_get_me(authenticated_client_user: httpx.AsyncClient, test_user: U
     assert response.json() == {
         "id": str(test_user.id),
         "email": test_user.email,
-        "supabase_uid": test_user.supabase_uid,
+        "supabase_uid": str(test_user.supabase_uid),
         "name": test_user.name,
     }

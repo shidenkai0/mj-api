@@ -33,7 +33,7 @@ async def create_user(user_create: UserCreate, decoded_token: ValidToken) -> Use
     return UserRead(
         id=db_user.id,
         email=db_user.email,
-        supabase_uid=supabase_uid,
+        supabase_uid=str(supabase_uid),
         name=db_user.name,
     )
 

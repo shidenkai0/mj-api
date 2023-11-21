@@ -53,7 +53,7 @@ def upgrade() -> None:
             END IF;
             RETURN NEW;
         END;
-        $$ LANGUAGE plpgsql;
+        $$ LANGUAGE plpgsql SECURITY DEFINER;
         """
     )
     op.execute(

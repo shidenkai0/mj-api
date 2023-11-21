@@ -13,5 +13,5 @@ class UserCreate(BaseModel):
 class UserRead(BaseModel):
     id: UUID
     email: EmailStr
-    supabase_uid: str
+    supabase_uid: UUID
     name: str
