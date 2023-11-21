@@ -18,11 +18,12 @@ async def authenticate_user_token(creds: Annotated[HTTPAuthorizationCredentials,
     id_token = creds.credentials
     try:
         # Decoding the JWT token
-        decoded_token = jwt.decode(id_token, SUPABASE_SECRET_KEY, algorithms=[ALGORITHM])
+        decoded_token = jwt.decode(id_token, SUPABASE_SECRET_KEY, algorithms=[ALGORITHM], audience="authenticated")
         return decoded_token
     except jwt.ExpiredSignatureError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token has expired")
-    except jwt.InvalidTokenError:
+    except jwt.InvalidTokenError as e:
+        print(f"JWT token invalid: {e}")
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
 
 
@@ -37,7 +38,7 @@ async def authenticate_user(decoded_token: Annotated[str, Depends(authenticate_u
 
     email_verified = decoded_token.get("email_verified")
     if not email_verified:
-        raise HTTPException(status_code=403, detail="Email not verified")
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Email not verified")
 
     return user
 

@@ -1,6 +1,25 @@
 version: '3'
 
 services:
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        DEV: 1
+    command: pytest
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgresql+asyncpg://postgres:mysecretpassword@db:5432/test
+      UVICORN_PORT: 8080
+      TTS_ENGINE_URL: http://host.docker.internal:3000
+      ENV: test
+    env_file:
+      - .env
+    volumes:
+      - .:/app
+
   web:
     build:
       context: .
@@ -12,11 +31,8 @@ services:
       - "8080:8080"
     depends_on:
       - db
-      - firebase
     environment:
-      DATABASE_URL: postgresql+asyncpg://polyglot:mysecretpassword@db:5432/polyglot
       UVICORN_PORT: 8080
-      FIREBASE_AUTH_EMULATOR_HOST: firebase:9099
       TTS_ENGINE_URL: http://host.docker.internal:3000
       ENV: dev
     env_file:
@@ -24,34 +40,42 @@ services:
     volumes:
       - .:/app
 
+  # Supabase services
+  # studio:
+  #   image: supabase/studio:20231114-1442e42
+  #   ports:
+  #     - 8082:8082
+  
+  # auth:
+  #   image: supabase/gotrue:v2.114.1
+  #   environment:
+  #     - GOTRUE_SMTP_USER=
+  #     - GOTRUE_SMTP_PASS=
+
+  # mail:
+  #   container_name: supabase-mail
+  #   image: inbucket/inbucket:3.0.3
+  #   ports:
+  #     - '2500:2500' # SMTP
+  #     - '9000:9000' # web interface
+  #     - '1100:1100' # POP3
+
   db:
-    image: postgres:15
+    image: supabase/postgres:15.1.0.117
+    healthcheck:
+      test: ["CMD", "pg_isready", "-U", "postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
     environment:
-      POSTGRES_USER: polyglot
+      POSTGRES_USER: postgres
       POSTGRES_PASSWORD: mysecretpassword
-      POSTGRES_DB: polyglot
+      POSTGRES_DB: postgres
     ports:
       - "5432:5432"
     volumes:
       - db-data:/var/lib/postgresql/data
+      - ./scripts/db-init/99_create_test_db.sql:/docker-entrypoint-initdb.d/99_create_test_db.sql
 
-  firebase:
-    build:
-      context: .
-      dockerfile: Dockerfile.firebase
-    command: firebase emulators:start --only auth --token $FIREBASE_TOKEN --project $FIREBASE_PROJECT_ID
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9099/"]
-      interval: 30s
-      timeout: 10s
-      retries: 5
-    ports:
-      - 9099:9099
-      - 4000:4000
-    volumes:
-      - firebase_data:/root/.cache/firebase/emulators
-      - ./firebase.json:/firebase.json
-      - ./firebaserc:/firebaserc
 volumes:
   db-data:
-  firebase_data:

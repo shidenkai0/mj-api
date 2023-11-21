@@ -68,8 +68,13 @@ async def run_async_migrations():
     and associate a connection with the context.
 
     """
-    print("DATABASE_URL", settings.DATABASE_URL.unicode_string())
-    connectable = create_async_engine(settings.DATABASE_URL.unicode_string())
+    alembic_config_database_url = config.get_main_option("sqlalchemy.url")
+    database_url = (
+        alembic_config_database_url
+        if alembic_config_database_url is not None
+        else settings.DATABASE_URL.unicode_string()
+    )
+    connectable = create_async_engine(database_url)
 
     async with connectable.connect() as connection:
         await connection.run_sync(do_run_migrations)

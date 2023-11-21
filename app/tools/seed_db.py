@@ -1,15 +1,10 @@
 import asyncio
-import uuid
-from datetime import datetime
-
-import firebase_admin
-from firebase_admin import auth, credentials
+from supabase import create_client, Client
 
 from app.config import settings
 from app.user.models import User
 
-cred = credentials.Certificate(settings.FIREBASE_KEY_FILE)
-firebase_admin.initialize_app(cred)
+supabase: Client = create_client(supabase_url=settings.SUPABASE_URL, supabase_key=settings.SUPABASE_SERVICE_ROLE_KEY)
 
 
 async def create_user(email: str, supabase_uid: str, name: str, language: str, is_superuser: bool) -> User:
@@ -20,13 +15,19 @@ async def create_user(email: str, supabase_uid: str, name: str, language: str, i
 
 
 async def seed_db():
-    # Create user in firebase
-    firebase_user = auth.create_user(email="testuser@example.com", password="stpzga8n", email_verified=True)
+    USER_EMAIL = "testuser@example.com"
+    USER_PASSWORD = "stpzga8n"
+
+    # Create user in Supabase
+    resp = supabase.auth.admin.create_user({"email": USER_EMAIL, "password": USER_PASSWORD, "email_confirm": True})
+
+    # Get Supabase UID
+    supabase_uid = resp.user.id
 
     # Create user in DB
     user = await create_user(
-        email="testuser@example.com",
-        supabase_uid=firebase_user.uid,
+        email=USER_EMAIL,
+        supabase_uid=supabase_uid,
         name="Testuser",
         language="en",
         is_superuser=False,
