@@ -35,10 +35,9 @@ async def authenticate_user(decoded_token: Annotated[str, Depends(authenticate_u
     user = await User.get_by_supabase_uid(supabase_uid)
     if user is None:
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="User not found")
-
-    email_verified = decoded_token.get("email_verified")
-    if not email_verified:
-        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Email not verified")
+    role = decoded_token.get("role")
+    if role != "authenticated":
+        raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Unauthorized")
 
     return user
 
