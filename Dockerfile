@@ -33,6 +33,8 @@ COPY --from=base /opt/venv /opt/venv
 
 WORKDIR /app
 
+COPY scripts/wait-for-it.sh /usr/local/bin/wait-for-it
+
 # Copy app code
 COPY . .
 

@@ -23,12 +23,11 @@ class Settings(BaseSettings):
     MAX_OVERFLOW: int = 20
     OPENAI_API_KEY: str
     APP_SECRET: str
+    SUPABASE_URL: str
+    SUPABASE_JWT_SECRET: str
+    SUPABASE_SERVICE_ROLE_KEY: str
     ENV: Env = Env.DEV
     PROJECT_NAME: str = "mockingjay"
-    FIREBASE_KEY_FILE: str = "polyglot-dev.json"
-    FIREBASE_PROJECT_ID: str = "polyglot-dev"
-    FIREBASE_AUTH_EMULATOR_HOST: str
-    SUPPORTED_LANGUAGES: list[str] = ["en", "fr"]
     TTS_ENGINE_URL: str = "http://localhost:3000"
 
     @property

@@ -1,36 +1,39 @@
 import asyncio
-import uuid
-from datetime import datetime
-
-import firebase_admin
-from firebase_admin import auth, credentials
+import argparse
+from supabase import create_client, Client
 
 from app.config import settings
 from app.user.models import User
 
-cred = credentials.Certificate(settings.FIREBASE_KEY_FILE)
-firebase_admin.initialize_app(cred)
+supabase: Client = create_client(supabase_url=settings.SUPABASE_URL, supabase_key=settings.SUPABASE_SERVICE_ROLE_KEY)
 
-
-async def create_user(email: str, firebase_uid: str, name: str, language: str, is_superuser: bool) -> User:
-    user = await User.create(
-        email=email, firebase_uid=firebase_uid, name=name, language=language, is_superuser=is_superuser
-    )
-    return user
+TEST_USER_EMAIL = "testuser@example.com"
+TEST_USER_PASSWORD = "stpzga8n"
 
 
 async def seed_db():
-    # Create user in firebase
-    firebase_user = auth.create_user(email="testuser@example.com", password="stpzga8n", email_verified=True)
-
-    # Create user in DB
-    user = await create_user(
-        email="testuser@example.com",
-        firebase_uid=firebase_user.uid,
-        name="Testuser",
-        language="en",
-        is_superuser=False,
+    # Create user in Supabase
+    resp = supabase.auth.admin.create_user(
+        {"email": TEST_USER_EMAIL, "password": TEST_USER_PASSWORD, "email_confirm": True}
     )
 
 
-asyncio.run(seed_db())
+async def cleanup_db():
+    # Delete user in Supabase
+    users = supabase.auth.admin.list_users(page=1, per_page=20)
+    # Find user by email
+    test_user = [user for user in users if user.email == TEST_USER_EMAIL].pop()
+    user_id = test_user.id
+    resp = supabase.auth.admin.delete_user(user_id)
+
+
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description="Seed Supabase database")
+    parser.add_argument("--cleanup", action="store_true", help="Cleanup Supabase database")
+
+    args = parser.parse_args()
+
+    if args.cleanup:
+        asyncio.run(cleanup_db())
+    else:
+        asyncio.run(seed_db())

@@ -1,13 +1,8 @@
-import firebase_admin
 from fastapi import FastAPI
-from firebase_admin import credentials
 
 from app.config import settings
 from app.speech.router import router as speech_router
 from app.user.router import router as user_router
-
-cred = credentials.Certificate(settings.FIREBASE_KEY_FILE)
-firebase_admin.initialize_app(cred)
 
 
 def create_app() -> FastAPI:
