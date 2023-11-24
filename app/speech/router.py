@@ -5,7 +5,7 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import StreamingResponse
 from app.speech.models import TTSTranscription
-from app.speech.schemas import TTSTranscriptionCreate, TTSTranscriptionRead
+from app.speech.schemas import TTSTranscriptionCreate, TTSTranscriptionRead, VoicePreset
 from app.user.auth import authenticate_user
 from app.user.models import User
 
@@ -106,6 +106,15 @@ async def download_transcription(user: ActiveVerifiedUser, transcription_id: UUI
     return StreamingResponse(audio_stream, media_type="audio/wav")
 
 
-@router.get("/voice_presets")
-async def get_voice_presets(user: ActiveVerifiedUser) -> List[str]:
-    return ["snoop-dogg-hb-7s", "taylor-1-v0-bs16-e9"]
+VOICE_PRESETS = [
+    VoicePreset(preset_name="snoop-dogg-hb-7s", display_name="Snoop Dogg"),
+    VoicePreset(preset_name="taylor-1", display_name="Taylor"),
+    VoicePreset(preset_name="taylor-2", display_name="Taylor"),
+    VoicePreset(preset_name="taylor-3", display_name="Taylor"),
+    VoicePreset(preset_name="obama-7s", display_name="Obama"),
+]
+
+
+@router.get("/voice_presets", response_model=List[VoicePreset])
+async def get_voice_presets(user: ActiveVerifiedUser) -> List[VoicePreset]:
+    return VOICE_PRESETS

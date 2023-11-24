@@ -15,3 +15,8 @@ class TTSTranscriptionRead(TTSTranscriptionBase):
     id: UUID
     user_id: UUID
     model_config = ConfigDict(from_attributes=True)
+
+
+class VoicePreset(BaseModel):
+    preset_name: str
+    display_name: str

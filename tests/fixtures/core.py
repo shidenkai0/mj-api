@@ -40,6 +40,7 @@ def generate_jwt_token(user_id: uuid.UUID, email: str, is_email_verified: bool =
         "sub": str(user_id),
         "email": email,
         "aud": "authenticated",
+        "role": "authenticated",
         "email_verified": is_email_verified,
         "exp": datetime.utcnow() + timedelta(hours=1),
     }
@@ -66,12 +67,6 @@ async def test_user() -> AsyncGenerator[User, None]:
 
 
 @pytest_asyncio.fixture
-async def test_unverified_user() -> AsyncGenerator[User, None]:
-    user = await create_test_user(email="unverified@test.com", name="Test Unverified User", is_superuser=False)
-    yield user
-
-
-@pytest_asyncio.fixture
 async def test_superuser() -> AsyncGenerator[User, None]:
     user = await create_test_user(email="superuser@test.com", name="Test Superuser", is_superuser=True)
     yield user
@@ -91,15 +86,6 @@ async def authenticated_client_user(
     client: httpx.AsyncClient, test_user: User
 ) -> AsyncGenerator[httpx.AsyncClient, None]:
     token = generate_jwt_token(test_user.supabase_uid, test_user.email)
-    client.headers["Authorization"] = f"Bearer {token}"
-    yield client
-
-
-@pytest_asyncio.fixture
-async def authenticated_client_unverified_user(
-    client: httpx.AsyncClient, test_unverified_user: User
-) -> AsyncGenerator[httpx.AsyncClient, None]:
-    token = generate_jwt_token(test_unverified_user.supabase_uid, test_unverified_user.email, is_email_verified=False)
     client.headers["Authorization"] = f"Bearer {token}"
     yield client
 

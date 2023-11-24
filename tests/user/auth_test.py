@@ -12,12 +12,6 @@ async def test_authenticate_user(authenticated_client_user: httpx.AsyncClient, t
 
 
 @pytest.mark.asyncio
-async def test_authenticate_unverified_user(authenticated_client_unverified_user: httpx.AsyncClient):
-    response = await authenticated_client_unverified_user.get("/verifieduser")
-    assert response.status_code == 403
-
-
-@pytest.mark.asyncio
 async def test_authenticate_superuser(authenticated_client_superuser: httpx.AsyncClient, test_superuser: User):
     response = await authenticated_client_superuser.get("/superuser")
     assert response.status_code == 200

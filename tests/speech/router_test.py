@@ -1,6 +1,7 @@
 import pytest
 from httpx import AsyncClient
 from app.speech.models import TTSTranscription
+from app.speech.router import VOICE_PRESETS
 from app.user.models import User
 
 # Assuming you have similar fixtures for test_user and authenticated_client_user
@@ -53,4 +54,4 @@ async def test_get_voice_presets(authenticated_client_user: AsyncClient):
     response = await authenticated_client_user.get("/voice_presets")
     assert response.status_code == 200
     print(response.text)
-    assert "snoop-dogg-hb-7s" in response.json()  # Assuming "default" is a valid voice preset
+    assert len(response.json()) == len(VOICE_PRESETS)
