@@ -15,7 +15,10 @@ async def tts_client():
 
 async def get_tts(text: str, voice_preset: str) -> bytes:
     """Get a text to speech transcription."""
+    if not text:
+        raise ValueError("Transcription text cannot be empty")
+
     client = await tts_client()
-    response: BinaryIO = await client.call("generate", {"text": text, "voice_preset": voice_preset})
+    response: BinaryIO = await client.call("generate", {"text": text, "voice_preset": f"voice_presets/{voice_preset}"})
 
     return response.read()

@@ -17,4 +17,6 @@ async def test_get_tts(patched_tts_client):
     assert result == resp_data
 
     # Assert the call method was called with the correct arguments
-    patched_tts_client.assert_called_once_with("generate", {"text": text, "voice_preset": voice_preset})
+    patched_tts_client.assert_called_once_with(
+        "generate", {"text": text, "voice_preset": f"voice_presets/{voice_preset}"}
+    )

@@ -108,9 +108,9 @@ async def download_transcription(user: ActiveVerifiedUser, transcription_id: UUI
 
 VOICE_PRESETS = [
     VoicePreset(name="snoop-dogg-hb-7s", display_name="Snoop Dogg"),
-    VoicePreset(name="taylor-1", display_name="Taylor"),
-    VoicePreset(name="taylor-2", display_name="Taylor"),
-    VoicePreset(name="taylor-3", display_name="Taylor"),
+    VoicePreset(name="taylor-1", display_name="Taylor 1"),
+    VoicePreset(name="taylor-2", display_name="Taylor 2"),
+    VoicePreset(name="taylor-3", display_name="Taylor 3"),
     VoicePreset(name="obama-7s", display_name="Obama"),
 ]
 
