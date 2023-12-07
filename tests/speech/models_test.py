@@ -1,18 +1,18 @@
 import pytest
 from uuid import UUID
-from app.speech.models import TTSTranscription
+from app.speech.models import TTSTranscription, VoicePreset
 from app.user.models import User
 from sqlalchemy.ext.asyncio import AsyncSession
 from unittest.mock import patch
 
 
 @pytest.mark.asyncio
-async def test_tts_transcription_create(test_user: User):
+async def test_tts_transcription_create(test_user: User, test_voice_preset: VoicePreset):
     """Test creating a new TTSTranscription object."""
     tts_transcription = await TTSTranscription.create(
         user_id=test_user.id,
         text="Hello, world!",
-        voice_preset="default",
+        voice_preset_id=test_voice_preset.id,
         audio=b"audio data",
     )
     assert tts_transcription.id is not None
@@ -48,18 +48,18 @@ async def test_tts_transcription_delete(async_session: AsyncSession, test_tts_tr
 
 
 @pytest.mark.asyncio
-async def test_tts_transcription_transcribe(test_user: User):
+async def test_tts_transcription_transcribe(test_user: User, test_voice_preset: VoicePreset):
     """Test transcribing text to speech."""
     # Mock the get_tts function to return a dummy audio data
     with patch("app.speech.models.get_tts", return_value=b"audio data"):
         text = "Hello, world!"
         voice_preset = "default"
         tts_transcription = await TTSTranscription.transcribe(
-            user_id=test_user.id, text=text, voice_preset=voice_preset
+            user_id=test_user.id, text=text, voice_preset_id=test_voice_preset.id
         )
 
         assert tts_transcription is not None
         assert tts_transcription.user_id == test_user.id
-        assert tts_transcription.voice_preset == voice_preset
+        assert tts_transcription.voice_preset_id == test_voice_preset.id
         assert tts_transcription.text == text
         assert tts_transcription.audio == b"audio data"

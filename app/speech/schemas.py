@@ -2,21 +2,22 @@ from pydantic import ConfigDict, BaseModel
 from uuid import UUID
 
 
+class VoicePresetRead(BaseModel):
+    id: UUID
+    name: str
+    display_name: str
+
+
 class TTSTranscriptionBase(BaseModel):
     text: str
-    voice_preset: str
 
 
 class TTSTranscriptionCreate(TTSTranscriptionBase):
-    pass
+    voice_preset_id: UUID
 
 
 class TTSTranscriptionRead(TTSTranscriptionBase):
     id: UUID
     user_id: UUID
+    voice_preset: VoicePresetRead
     model_config = ConfigDict(from_attributes=True)
-
-
-class VoicePreset(BaseModel):
-    name: str
-    display_name: str

@@ -4,8 +4,8 @@ from uuid import UUID
 
 from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import StreamingResponse
-from app.speech.models import TTSTranscription
-from app.speech.schemas import TTSTranscriptionCreate, TTSTranscriptionRead, VoicePreset
+from app.speech.models import TTSTranscription, VoicePreset
+from app.speech.schemas import TTSTranscriptionCreate, TTSTranscriptionRead, VoicePresetRead
 from app.user.auth import authenticate_user
 from app.user.models import User
 
@@ -31,7 +31,11 @@ async def get_transcriptions(user: ActiveVerifiedUser) -> List[TTSTranscriptionR
             id=transcription.id,
             user_id=transcription.user_id,
             text=transcription.text,
-            voice_preset=transcription.voice_preset,
+            voice_preset=VoicePresetRead(
+                id=transcription.voice_preset.id,
+                name=transcription.voice_preset.name,
+                display_name=transcription.voice_preset.display_name,
+            ),
         )
         for transcription in transcriptions
     ]
@@ -54,7 +58,11 @@ async def get_transcription(transcription_id: UUID, user: ActiveVerifiedUser) ->
         id=transcription.id,
         user_id=transcription.user_id,
         text=transcription.text,
-        voice_preset=transcription.voice_preset,
+        voice_preset=VoicePresetRead(
+            id=transcription.voice_preset.id,
+            name=transcription.voice_preset.name,
+            display_name=transcription.voice_preset.display_name,
+        ),
     )
 
 
@@ -62,13 +70,17 @@ async def get_transcription(transcription_id: UUID, user: ActiveVerifiedUser) ->
 async def new_transcription(user: ActiveVerifiedUser, transcription: TTSTranscriptionCreate) -> TTSTranscriptionRead:
     """Create a new transcription."""
     tts_transcription = await TTSTranscription.transcribe(
-        user_id=user.id, text=transcription.text, voice_preset=transcription.voice_preset
+        user_id=user.id, text=transcription.text, voice_preset_id=transcription.voice_preset_id
     )
     return TTSTranscriptionRead(
         id=tts_transcription.id,
         user_id=user.id,
         text=tts_transcription.text,
-        voice_preset=tts_transcription.voice_preset,
+        voice_preset=VoicePresetRead(
+            id=tts_transcription.voice_preset.id,
+            name=tts_transcription.voice_preset.name,
+            display_name=tts_transcription.voice_preset.display_name,
+        ),
     )
 
 
@@ -106,15 +118,10 @@ async def download_transcription(user: ActiveVerifiedUser, transcription_id: UUI
     return StreamingResponse(audio_stream, media_type="audio/wav")
 
 
-VOICE_PRESETS = [
-    VoicePreset(name="snoop-dogg-hb-7s", display_name="Snoop Dogg"),
-    VoicePreset(name="taylor-1", display_name="Taylor 1"),
-    VoicePreset(name="taylor-2", display_name="Taylor 2"),
-    VoicePreset(name="taylor-3", display_name="Taylor 3"),
-    VoicePreset(name="obama-7s", display_name="Obama"),
-]
-
-
-@router.get("/voice_presets", response_model=List[VoicePreset])
+@router.get("/voice_presets", response_model=List[VoicePresetRead])
 async def get_voice_presets(user: ActiveVerifiedUser) -> List[VoicePreset]:
-    return VOICE_PRESETS
+    voice_presets = await VoicePreset.get_all()
+    return [
+        VoicePresetRead(id=voice_preset.id, name=voice_preset.name, display_name=voice_preset.display_name)
+        for voice_preset in voice_presets
+    ]

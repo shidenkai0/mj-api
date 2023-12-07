@@ -1,7 +1,6 @@
 import pytest
 from httpx import AsyncClient
-from app.speech.models import TTSTranscription
-from app.speech.router import VOICE_PRESETS
+from app.speech.models import TTSTranscription, VoicePreset
 from app.user.models import User
 
 # Assuming you have similar fixtures for test_user and authenticated_client_user
@@ -29,11 +28,13 @@ async def test_get_transcription(authenticated_client_user: AsyncClient, test_tt
 
 
 @pytest.mark.asyncio
-async def test_new_transcription(authenticated_client_user: AsyncClient, test_user: User, patched_tts_client):
+async def test_new_transcription(
+    authenticated_client_user: AsyncClient, test_user: User, test_voice_preset: VoicePreset, patched_tts_client
+):
     # Test creating a new TTSTranscription
     transcription_data = {
         "text": "Sample text",
-        "voice_preset": "default",
+        "voice_preset_id": str(test_voice_preset.id),
     }
     response = await authenticated_client_user.post("/transcription", json=transcription_data)
     assert response.status_code == 200
@@ -49,9 +50,14 @@ async def test_download_transcription(authenticated_client_user: AsyncClient, te
 
 
 @pytest.mark.asyncio
-async def test_get_voice_presets(authenticated_client_user: AsyncClient):
+async def test_get_voice_presets(authenticated_client_user: AsyncClient, test_voice_preset: VoicePreset):
     # Test getting the list of voice presets
     response = await authenticated_client_user.get("/voice_presets")
     assert response.status_code == 200
-    print(response.text)
-    assert len(response.json()) == len(VOICE_PRESETS)
+    assert response.json() == [
+        {
+            "id": str(test_voice_preset.id),
+            "name": test_voice_preset.name,
+            "display_name": test_voice_preset.display_name,
+        }
+    ]
