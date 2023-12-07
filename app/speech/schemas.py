@@ -18,5 +18,5 @@ class TTSTranscriptionRead(TTSTranscriptionBase):
 
 
 class VoicePreset(BaseModel):
-    preset_name: str
+    name: str
     display_name: str
