@@ -26,6 +26,8 @@ class Settings(BaseSettings):
     SUPABASE_URL: str
     SUPABASE_JWT_SECRET: str
     SUPABASE_SERVICE_ROLE_KEY: str
+    RUNPOD_API_KEY: str
+    RUNPOD_ENDPOINT_URL: str
     ENV: Env = Env.DEV
     PROJECT_NAME: str = "mockingjay"
     TTS_ENGINE_URL: str = "http://localhost:3000"

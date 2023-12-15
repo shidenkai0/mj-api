@@ -29,7 +29,11 @@ async def test_get_transcription(authenticated_client_user: AsyncClient, test_tt
 
 @pytest.mark.asyncio
 async def test_new_transcription(
-    authenticated_client_user: AsyncClient, test_user: User, test_voice_preset: VoicePreset, patched_tts_client
+    authenticated_client_user: AsyncClient,
+    test_user: User,
+    test_voice_preset: VoicePreset,
+    patched_tts_client,
+    mock_get_audio,
 ):
     # Test creating a new TTSTranscription
     transcription_data = {

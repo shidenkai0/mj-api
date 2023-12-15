@@ -48,7 +48,7 @@ async def test_tts_transcription_delete(async_session: AsyncSession, test_tts_tr
 
 
 @pytest.mark.asyncio
-async def test_tts_transcription_transcribe(test_user: User, test_voice_preset: VoicePreset):
+async def test_tts_transcription_transcribe(test_user: User, test_voice_preset: VoicePreset, mock_get_audio):
     """Test transcribing text to speech."""
     # Mock the get_tts function to return a dummy audio data
     with patch("app.speech.models.get_tts", return_value=b"audio data"):
