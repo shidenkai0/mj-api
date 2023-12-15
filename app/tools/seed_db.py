@@ -1,4 +1,5 @@
 import asyncio
+import base64
 import argparse
 from supabase import create_client, Client
 
@@ -20,9 +21,19 @@ VOICE_PRESETS = [
 ]
 
 
+def get_base64_voice_preset(name: str) -> str:
+    """
+    Read a binary voice preset from a npz file and return the base64 encoded string of the voice preset.
+    """
+    with open(f"app/tools/voice_presets/{name}.npz", "rb") as f:
+        return base64.b64encode(f.read()).decode()
+
+
 async def create_voice_presets():
     for voice_preset in VOICE_PRESETS:
-        await VoicePreset.create(name=voice_preset[0], display_name=voice_preset[1])
+        await VoicePreset.create(
+            name=voice_preset[0], display_name=voice_preset[1], base64=get_base64_voice_preset(voice_preset[0])
+        )
 
 
 async def seed_db():
