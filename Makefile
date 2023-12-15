@@ -91,7 +91,7 @@ test: migrate_test
 	docker-compose run --rm test pytest -vv
 
 dev_tunnel:
-	ngrok http --domain=polyglot-dg86ikmt.ngrok.dev 8080
+	ngrok http 8080
 
 cleanup_supabase:
 	docker-compose run --rm web alembic downgrade base

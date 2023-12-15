@@ -1,4 +1,5 @@
 import uuid
+import httpx
 import sqlalchemy as sa
 from typing import Optional, Sequence
 
@@ -38,6 +39,7 @@ class VoicePreset(Base, TimestampMixin):
     id: Mapped[uuid.UUID] = mapped_column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)  # type: ignore
     name: Mapped[str] = mapped_column(String, nullable=False, unique=True)
     display_name: Mapped[str] = mapped_column(String, nullable=False)
+    base64: Mapped[str] = mapped_column(String, nullable=False)
 
     def __repr__(self) -> str:
         """
@@ -49,7 +51,7 @@ class VoicePreset(Base, TimestampMixin):
         return f"<VoicePreset(id={self.id}, name={self.name}, display_name={self.display_name})>"
 
     @classmethod
-    async def create(cls, name: str, display_name: str, commit: bool = True) -> "VoicePreset":
+    async def create(cls, name: str, display_name: str, base64: str, commit: bool = True) -> "VoicePreset":
         """
         Create a new voice preset.
 
@@ -61,7 +63,7 @@ class VoicePreset(Base, TimestampMixin):
         Returns:
             VoicePreset: The newly created voice preset.
         """
-        voice_preset = cls(name=name, display_name=display_name)
+        voice_preset = cls(name=name, display_name=display_name, base64=base64)
         async with async_session() as session:
             if commit:
                 session.add(voice_preset)
@@ -97,6 +99,22 @@ class VoicePreset(Base, TimestampMixin):
         async with async_session() as session:
             result = await session.execute(query)
             return result.scalars().unique().all()
+
+
+async def get_audio(url: str) -> bytes:
+    """
+    Fetch audio data from a given URL.
+
+    Args:
+        url (str): The URL to fetch the audio from.
+
+    Returns:
+        bytes: The audio data.
+    """
+    async with httpx.AsyncClient() as client:
+        response = await client.get(url)
+        response.raise_for_status()
+        return response.content
 
 
 class TTSTranscription(Base, TimestampMixin, DeleteMixin):
@@ -208,5 +226,8 @@ class TTSTranscription(Base, TimestampMixin, DeleteMixin):
         voice_preset = await VoicePreset.get(voice_preset_id)
         if voice_preset is None:
             raise ValueError(f"Voice preset {voice_preset_id} does not exist.")
-        audio = await get_tts(text=text, voice_preset=voice_preset.name)
+        audio_url = await get_tts(text=text, voice_preset_base64=voice_preset.base64)
+
+        audio = await get_audio(url=audio_url)
+
         return await cls.create(user_id=user_id, text=text, voice_preset_id=voice_preset_id, audio=audio, commit=True)
